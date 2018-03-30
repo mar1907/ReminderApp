@@ -1,5 +1,7 @@
 package com.example.marius.reminderapp;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +12,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Date;
+
 import repository.ReminderHandler;
 import service.ReminderService;
 
@@ -17,6 +21,7 @@ public class ContentList extends AppCompatActivity {
 
     private ReminderService reminderService;
     private CheckLineAdapter adapter;
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +46,16 @@ public class ContentList extends AppCompatActivity {
 
     private void createList(ReminderService reminderService){
         adapter = new CheckLineAdapter(this, R.layout.line_check, reminderService.getTextTime());
+        //TODO add listeners
+    }
+
+
+    private void showDialog(String text, Date date, boolean alarm){
+        Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.id.//TODO create said view);
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

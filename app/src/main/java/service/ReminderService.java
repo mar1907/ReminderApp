@@ -20,7 +20,7 @@ public class ReminderService {
 
     public Pair<String,String>[] getTextTime(){
         Pair<String,String>[] pairs = new Pair[reminderList.size()];
-        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM");
+        SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM  HH:mm");
         for(int i = 0; i < reminderList.size(); i++){
             Reminder reminder = reminderList.get(i);
             pairs[i] = new Pair<>(reminder.get_text(), format.format(reminder.get_time()));

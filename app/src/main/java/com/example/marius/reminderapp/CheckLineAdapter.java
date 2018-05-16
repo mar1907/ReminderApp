@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import java.util.Date;
 
+import model.Reminder;
+
 class CheckLineAdapter extends ArrayAdapter {
 
     boolean isLongPressed;
@@ -30,15 +32,15 @@ class CheckLineAdapter extends ArrayAdapter {
         LayoutInflater inflater=LayoutInflater.from(getContext());
         View customView= inflater.inflate(R.layout.line_check,parent,false);
 
-        Pair<String,String> pair = (Pair<String, String>)getItem(position);
-        String text = pair.first;
-        String date = pair.second;
+        Reminder reminder = (Reminder)getItem(position);
+        String text = reminder.get_text();
+        Date date = reminder.get_time();
 
         TextView textView = customView.findViewById(R.id.line_text);
         textView.setText(text);
 
         TextView textClock = customView.findViewById(R.id.line_time);
-        textView.setText(date);
+        textClock.setText(date.toString());
 
         CheckBox checkBox=customView.findViewById(R.id.hidden_box);
         if(isLongPressed){

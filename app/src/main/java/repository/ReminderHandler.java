@@ -33,7 +33,7 @@ public class ReminderHandler extends SQLiteOpenHelper{
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_TIME + " LONG," +
                 COLUMN_TEXT + " TEXT," +
-                COLUMN_ALARM + " INTEGER," +
+                COLUMN_ALARM + " INTEGER" +
                 ");";
         sqLiteDatabase.execSQL(query);
     }

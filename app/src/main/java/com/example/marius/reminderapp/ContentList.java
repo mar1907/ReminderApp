@@ -11,9 +11,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.AdapterView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
+import model.Reminder;
 import repository.ReminderHandler;
 import service.ReminderService;
 
@@ -22,6 +32,7 @@ public class ContentList extends AppCompatActivity {
     private ReminderService reminderService;
     private CheckLineAdapter adapter;
     private Context context = this;
+    private boolean longClick;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,27 +44,103 @@ public class ContentList extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setImageResource(R.mipmap.ic_add);
         fab.setRippleColor(Color.YELLOW);
+
+        //TODO change
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showDialog(null);
             }
         });
 
         reminderService = new ReminderService(new ReminderHandler(this,null,null,1));
+        createList(reminderService);
+
+        //TODO add options?
     }
 
-    private void createList(ReminderService reminderService){
-        adapter = new CheckLineAdapter(this, R.layout.line_check, reminderService.getTextTime());
-        //TODO add listeners
+    private void createList(final ReminderService reminderService){
+        adapter = new CheckLineAdapter(this, R.layout.line_check, reminderService.getReminderList());
+        ListView listView = (ListView)findViewById(R.id.list1);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                showDialog(reminderService.getReminderList()[i]);
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                longClick = true;
+                adapter.showCheckBox();
+                invalidateOptionsMenu();
+                return true;
+            }
+        });
     }
 
 
-    private void showDialog(String text, Date date, boolean alarm){
-        Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.id.//TODO create said view);
+    private void showDialog(final Reminder reminder){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.alarm_view_dialog_layout);//TODO create said view
+        dialog.setTitle("Reminder");
 
+        final EditText messageEditText = dialog.findViewById(R.id.messageEditText);
+        final EditText timeEditText = dialog.findViewById(R.id.timeEditText);
+        final CheckBox alarm = dialog.findViewById(R.id.checkBox);
+
+        if(reminder!=null){
+            messageEditText.setText(reminder.get_text());
+            timeEditText.setText(reminder.get_time().toString());
+            alarm.setChecked(reminder.get_alarm()==1);
+        }
+
+        Button cancelButton=dialog.findViewById(R.id.cancel_button);
+        Button okButton=dialog.findViewById(R.id.ok_button);
+
+        cancelButton.setOnClickListener(
+                new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
+                    }
+                }
+        );
+
+        okButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                String message = messageEditText.getText().toString();
+
+                Date date=new Date();
+                DateFormat format = new SimpleDateFormat("hh:mm:ss", Locale.GERMANY);
+                try {
+                    date = format.parse(timeEditText.getText().toString());
+                } catch (ParseException e) {
+                    //TODO something
+                }
+
+                int al = alarm.isChecked()?1:0;
+
+                if(reminder!=null){
+                    Reminder newReminder = new Reminder(date, message, al);
+                    reminderService.addReminder(newReminder);
+                } else {
+                    Reminder reminder = new Reminder();
+                    reminder.set_text(message);
+                    reminder.set_time(date);
+                    reminder.set_alarm(al);
+                    reminderService.addReminder(reminder);
+                }
+
+                createList(reminderService);
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
     }
 
 

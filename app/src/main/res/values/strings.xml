@@ -6,4 +6,5 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_alarm">Alarm</string>
+    <string name="ovf_men_delete">Delete</string>
 </resources>

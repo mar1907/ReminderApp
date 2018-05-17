@@ -1,6 +1,7 @@
 package service;
 
 import android.support.v4.util.Pair;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,5 +24,13 @@ public class ReminderService {
 
     public void addReminder(Reminder reminder){
         reminderHandler.addReminder(reminder);
+    }
+
+    public void updateReminder(Reminder reminder){
+        reminderHandler.updateReminder(reminder);
+    }
+
+    public void delete(Integer index) {
+        reminderHandler.deleteReminder(getReminderList()[index].get_id());
     }
 }

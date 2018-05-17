@@ -13,6 +13,8 @@ import android.widget.CheckBox;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import model.Reminder;
@@ -39,8 +41,10 @@ class CheckLineAdapter extends ArrayAdapter {
         TextView textView = customView.findViewById(R.id.line_text);
         textView.setText(text);
 
+
+        DateFormat df = new SimpleDateFormat("dd/MM HH:mm");
         TextView textClock = customView.findViewById(R.id.line_time);
-        textClock.setText(date.toString());
+        textClock.setText(df.format(date));
 
         CheckBox checkBox=customView.findViewById(R.id.hidden_box);
         if(isLongPressed){

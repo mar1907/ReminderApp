@@ -8,19 +8,27 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import model.Reminder;
@@ -33,6 +41,7 @@ public class ContentList extends AppCompatActivity {
     private CheckLineAdapter adapter;
     private Context context = this;
     private boolean longClick;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,6 @@ public class ContentList extends AppCompatActivity {
         fab.setImageResource(R.mipmap.ic_add);
         fab.setRippleColor(Color.YELLOW);
 
-        //TODO change
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,7 +69,7 @@ public class ContentList extends AppCompatActivity {
 
     private void createList(final ReminderService reminderService){
         adapter = new CheckLineAdapter(this, R.layout.line_check, reminderService.getReminderList());
-        ListView listView = (ListView)findViewById(R.id.list1);
+        listView = (ListView)findViewById(R.id.list1);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -84,16 +92,20 @@ public class ContentList extends AppCompatActivity {
 
     private void showDialog(final Reminder reminder){
         final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.alarm_view_dialog_layout);//TODO create said view
+        dialog.setContentView(R.layout.alarm_view_dialog_layout);
         dialog.setTitle("Reminder");
 
         final EditText messageEditText = dialog.findViewById(R.id.messageEditText);
-        final EditText timeEditText = dialog.findViewById(R.id.timeEditText);
+
+        final TimePicker timePicker = dialog.findViewById(R.id.timePick);
+        timePicker.setIs24HourView(true);
+
+        final DatePicker datePicker = dialog.findViewById(R.id.datePick);
+
         final CheckBox alarm = dialog.findViewById(R.id.checkBox);
 
         if(reminder!=null){
             messageEditText.setText(reminder.get_text());
-            timeEditText.setText(reminder.get_time().toString());
             alarm.setChecked(reminder.get_alarm()==1);
         }
 
@@ -114,25 +126,31 @@ public class ContentList extends AppCompatActivity {
             public void onClick(View view) {
                 String message = messageEditText.getText().toString();
 
-                Date date=new Date();
-                DateFormat format = new SimpleDateFormat("hh:mm:ss", Locale.GERMANY);
-                try {
-                    date = format.parse(timeEditText.getText().toString());
-                } catch (ParseException e) {
-                    //TODO something
-                }
+                int day = datePicker.getDayOfMonth();
+                int month = datePicker.getMonth();
+                int year = datePicker.getYear();
+
+                int hour = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year,month,day,hour,minute);
+
+                Date date = calendar.getTime();
 
                 int al = alarm.isChecked()?1:0;
 
                 if(reminder!=null){
-                    Reminder newReminder = new Reminder(date, message, al);
-                    reminderService.addReminder(newReminder);
-                } else {
-                    Reminder reminder = new Reminder();
                     reminder.set_text(message);
                     reminder.set_time(date);
                     reminder.set_alarm(al);
-                    reminderService.addReminder(reminder);
+                    reminderService.updateReminder(reminder);
+                } else {
+                    Reminder newReminder = new Reminder();
+                    newReminder.set_text(message);
+                    newReminder.set_time(date);
+                    newReminder.set_alarm(al);
+                    reminderService.addReminder(newReminder);
                 }
 
                 createList(reminderService);
@@ -146,23 +164,86 @@ public class ContentList extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_content_list, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_content_list, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_delete);
+        menuItem.setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem=menu.findItem(R.id.action_delete);
+        if(longClick){
+            menuItem.setVisible(true);
+        }
+        else {
+            menuItem.setVisible(false);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()){
+            case R.id.action_delete:
+                deleteSelectedItems();
+                break;
+            /*case R.id.action_settings:
+                Intent i=new Intent(this,SettingsActivity.class);
+                startActivity(i);
+                break;
+            case R.id.action_change_pass:
+                Intent i1=new Intent(this,ChangePasswordActivity.class);
+                startActivity(i1);
+                break;*/
+        }
+        return true;
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void deleteSelectedItems() {
+        List<Integer> selectedIndices = new ArrayList<>();
+        for(int i=0; i<adapter.getCount(); i++){
+            View view=getViewByPosition(i,listView);
+
+            CheckBox cb=view.findViewById(R.id.hidden_box);
+            if(cb.isChecked()){
+                selectedIndices.add(i);
+            }
         }
 
-        return super.onOptionsItemSelected(item);
+        for(int i=selectedIndices.size()-1;i>=0;i--){
+            reminderService.delete(selectedIndices.get(i));
+        }
+
+        longClick=false;
+        adapter.hideCheckBox();
+        invalidateOptionsMenu();
+        createList(reminderService);
     }
+
+    @Override
+    public void onBackPressed() {
+        if(longClick){
+            longClick=false;
+            adapter.hideCheckBox();
+            invalidateOptionsMenu();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    public View getViewByPosition(int pos, ListView listView){
+        final int firstListItemPosition = listView.getFirstVisiblePosition();
+        final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+
+        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+            return listView.getAdapter().getView(pos, null, listView);
+        } else {
+            final int childIndex = pos - firstListItemPosition;
+            return listView.getChildAt(childIndex);
+        }
+    }
+
 }

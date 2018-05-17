@@ -57,6 +57,25 @@ public class ReminderHandler extends SQLiteOpenHelper{
         db.close();
     }
 
+    public void updateReminder(Reminder reminder){
+        String sql = "UPDATE " + TABLE_REMINDER + " SET " +
+                COLUMN_TIME + "=?, " +
+                COLUMN_TEXT + "=?, " +
+                COLUMN_ALARM + "=? WHERE " + COLUMN_ID + "=?;";
+
+        System.out.println(sql);
+
+        SQLiteDatabase db = getWritableDatabase();
+        SQLiteStatement statement = db.compileStatement(sql);
+
+        statement.bindLong(1, reminder.get_time().getTime());
+        statement.bindString(2, reminder.get_text());
+        statement.bindLong(3, reminder.get_alarm());
+
+        statement.executeUpdateDelete();
+        db.close();
+    }
+
     public void deleteReminder(int id){
         String sql = "DELETE FROM " + TABLE_REMINDER + " WHERE " + COLUMN_ID + "=" + id;
         SQLiteDatabase db = getWritableDatabase();
@@ -71,7 +90,7 @@ public class ReminderHandler extends SQLiteOpenHelper{
         String query = "SELECT * FROM "+TABLE_REMINDER+" WHERE 1";
 
         Cursor c = db.rawQuery(query,null);
-
+        System.out.println("Here 1");
         c.moveToFirst();
         while(!c.isAfterLast()){
             Reminder reminder = new Reminder();
@@ -80,9 +99,15 @@ public class ReminderHandler extends SQLiteOpenHelper{
             reminder.set_text(c.getString(c.getColumnIndex(COLUMN_TEXT)));
             reminder.set_alarm(c.getInt(c.getColumnIndex(COLUMN_ALARM)));
             reminderList.add(reminder);
+            System.out.println("Here!!");
+            c.moveToNext();
         }
 
+        System.out.println("Here 2");
+
         db.close();
+
+        System.out.println("Here 3");
         return reminderList;
     }
 }

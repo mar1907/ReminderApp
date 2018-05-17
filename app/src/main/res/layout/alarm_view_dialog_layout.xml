@@ -15,18 +15,28 @@
         android:hint="@string/dialog_message"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/timeEditText"
+    <TimePicker
+        android:id="@+id/timePick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageEditText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="13dp"
-        android:ems="15"
-        android:hint="@string/dialog_time"
-        android:inputType="time" />
+        android:layout_alignLeft="@id/messageEditText"
+        android:timePickerMode="spinner"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_marginLeft="-50dp"/>
+
+    <DatePicker
+        android:id="@+id/datePick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageEditText"
+        android:layout_alignRight="@id/messageEditText"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
+        android:layout_marginRight="-70dp"/>
 
     <Button
         android:id="@+id/cancel_button"
@@ -35,9 +45,8 @@
         android:layout_height="wrap_content"
         android:text="@string/dialog_cancel"
         android:textColor="@color/colorPrimaryDark"
+        android:layout_toLeftOf="@+id/checkBox"
         android:layout_below="@+id/checkBox"
-        android:layout_alignLeft="@+id/timeEditText"
-        android:layout_alignStart="@+id/timeEditText"
         android:layout_marginTop="20dp" />
 
     <Button
@@ -45,8 +54,8 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/timeEditText"
-        android:layout_alignRight="@+id/timeEditText"
+        android:layout_toRightOf="@+id/checkBox"
+        android:layout_below="@+id/datePick"
         android:layout_alignTop="@+id/cancel_button"
         android:text="@string/dialog_ok"
         android:textColor="@color/colorPrimaryDark" />
@@ -55,7 +64,7 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/timeEditText"
+        android:layout_below="@+id/timePick"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:text="@string/dialog_alarm" />

@@ -58,21 +58,12 @@ public class ReminderHandler extends SQLiteOpenHelper{
     }
 
     public void updateReminder(Reminder reminder){
-        String sql = "UPDATE " + TABLE_REMINDER + " SET " +
-                COLUMN_TIME + "=?, " +
-                COLUMN_TEXT + "=?, " +
-                COLUMN_ALARM + "=? WHERE " + COLUMN_ID + "=?;";
-
-        System.out.println(sql);
-
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_TIME, reminder.get_time().getTime());
+        contentValues.put(COLUMN_TEXT, reminder.get_text());
+        contentValues.put(COLUMN_ALARM, reminder.get_alarm());
         SQLiteDatabase db = getWritableDatabase();
-        SQLiteStatement statement = db.compileStatement(sql);
-
-        statement.bindLong(1, reminder.get_time().getTime());
-        statement.bindString(2, reminder.get_text());
-        statement.bindLong(3, reminder.get_alarm());
-
-        statement.executeUpdateDelete();
+        db.update(TABLE_REMINDER, contentValues, COLUMN_ID+"="+reminder.get_id(), null);
         db.close();
     }
 

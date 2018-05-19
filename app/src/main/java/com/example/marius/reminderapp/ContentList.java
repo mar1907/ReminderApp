@@ -1,12 +1,16 @@
 package com.example.marius.reminderapp;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.View;
@@ -22,6 +26,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -134,7 +142,7 @@ public class ContentList extends AppCompatActivity {
                 int minute = timePicker.getCurrentMinute();
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(year,month,day,hour,minute);
+                calendar.set(year,month,day,hour,minute,0);
 
                 Date date = calendar.getTime();
 
@@ -151,6 +159,7 @@ public class ContentList extends AppCompatActivity {
                     newReminder.set_time(date);
                     newReminder.set_alarm(al);
                     reminderService.addReminder(newReminder);
+                    createReminder(newReminder);
                 }
 
                 createList(reminderService);
@@ -159,6 +168,38 @@ public class ContentList extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private void createReminder(Reminder reminder) {
+        /*if(reminder.get_alarm()==0){
+            android.support.v4.app.NotificationCompat.Builder build = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_delete)
+                    .setContentTitle("Reminder App")
+                    .setContentText(reminder.get_text())
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        }*/
+        System.out.println(reminder.get_time().toString());
+        Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
+        notifyIntent.putExtra("Reminder",convertToByteArray(reminder));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder.get_id(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.get_time().getTime(), pendingIntent);
+    }
+
+
+    private byte[] convertToByteArray(Serializable s){
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(s);
+            out.flush();
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 

@@ -171,14 +171,6 @@ public class ContentList extends AppCompatActivity {
     }
 
     private void createReminder(Reminder reminder) {
-        /*if(reminder.get_alarm()==0){
-            android.support.v4.app.NotificationCompat.Builder build = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_delete)
-                    .setContentTitle("Reminder App")
-                    .setContentText(reminder.get_text())
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        }*/
         System.out.println(reminder.get_time().toString());
         Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
         notifyIntent.putExtra("Reminder",convertToByteArray(reminder));

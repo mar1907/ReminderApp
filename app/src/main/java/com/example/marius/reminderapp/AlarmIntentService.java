@@ -25,13 +25,18 @@ public class AlarmIntentService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Reminder reminder = converToReminder(intent.getByteArrayExtra("Reminder"));
+        Reminder reminder = convertToReminder(intent.getByteArrayExtra("Reminder"));
 
         if(reminder.get_alarm()==0)
             createNotification(reminder);
         else
-            //TODO create alarm
-            ;
+            createAlarm(reminder);
+    }
+
+    private void createAlarm(Reminder reminders) {
+        Intent intent = new Intent(this, AlarmActivity.class);
+        intent.putExtra("Text", reminders.get_text());
+        startActivity(intent);
     }
 
     private void createNotification(Reminder reminder) {
@@ -53,7 +58,7 @@ public class AlarmIntentService extends IntentService{
 
     }
 
-    private Reminder converToReminder(byte[] array){
+    private Reminder convertToReminder(byte[] array){
         ByteArrayInputStream bis = new ByteArrayInputStream(array);
         try {
             ObjectInput in = new ObjectInputStream(bis);

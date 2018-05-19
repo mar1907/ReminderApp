@@ -7,4 +7,6 @@
     <string name="dialog_ok">OK</string>
     <string name="dialog_alarm">Alarm</string>
     <string name="ovf_men_delete">Delete</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
+    <string name="stop">Stop</string>
 </resources>

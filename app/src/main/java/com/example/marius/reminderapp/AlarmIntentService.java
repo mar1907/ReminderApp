@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -44,8 +45,12 @@ public class AlarmIntentService extends IntentService{
                 .setContentTitle("ReminderApp")
                 .setContentText(reminder.get_text())
                 .setVibrate(new long[] { 1000, 1000})
+                //TODO change color
+                .setColor(Color.BLUE)
                 //TODO change icon
-                .setSmallIcon(R.mipmap.ic_delete);
+                .setSmallIcon(R.mipmap.ic_delete)
+                //TODO change led color
+                .setLights(Color.BLUE, 500, 500);
 
         Intent notifyIntent = new Intent(this, ContentList.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);

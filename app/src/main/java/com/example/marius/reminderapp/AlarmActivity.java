@@ -1,6 +1,11 @@
 package com.example.marius.reminderapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -15,9 +20,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class AlarmActivity extends AppCompatActivity {
+public class AlarmActivity extends AppCompatActivity implements SensorEventListener {
 
     private Ringtone ringtoneAlarm;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +55,41 @@ public class AlarmActivity extends AppCompatActivity {
         Uri alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         ringtoneAlarm = RingtoneManager.getRingtone(getApplicationContext(), alarmTone);
         ringtoneAlarm.play();
-        System.out.println("Play");
+
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
     }
 
     private void stopAlarm() {
         Intent intent = new Intent(this, ContentList.class);
         startActivity(intent);
-        System.out.println("Stop");
         ringtoneAlarm.stop();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        Sensor source = sensorEvent.sensor;
+        float z = sensorEvent.values[2];
+
+        if(source.getType()==Sensor.TYPE_GRAVITY){
+            if(z<=-SensorManager.STANDARD_GRAVITY/2){
+                ringtoneAlarm.stop();
+                stopAlarm();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(
+                this,
+                mSensor,
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 }

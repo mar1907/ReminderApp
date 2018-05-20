@@ -4,21 +4,17 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationManagerCompat;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.util.Date;
 
 import model.Reminder;
 
 
 public class AlarmIntentService extends IntentService{
-    private final int NOTIFICATION_ID = 3;
 
     public AlarmIntentService() {
         super("AlarmIntentService");

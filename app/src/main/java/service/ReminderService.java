@@ -1,9 +1,5 @@
 package service;
 
-import android.support.v4.util.Pair;
-import android.widget.Toast;
-
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import model.Reminder;

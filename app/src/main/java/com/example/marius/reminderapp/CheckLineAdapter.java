@@ -4,13 +4,11 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -21,7 +19,7 @@ import model.Reminder;
 
 class CheckLineAdapter extends ArrayAdapter {
 
-    boolean isLongPressed;
+    private boolean isLongPressed;
 
     public CheckLineAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull Object[] objects) {
         super(context, resource, objects);

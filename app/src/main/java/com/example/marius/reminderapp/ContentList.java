@@ -1,16 +1,11 @@
 package com.example.marius.reminderapp;
 
-import android.app.AlarmManager;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.View;
@@ -22,25 +17,16 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import model.Reminder;
 import repository.ReminderHandler;
+import service.AlarmService;
 import service.ReminderService;
 
 public class ContentList extends AppCompatActivity {
@@ -50,6 +36,7 @@ public class ContentList extends AppCompatActivity {
     private Context context = this;
     private boolean longClick;
     private ListView listView;
+    private AlarmService alarmService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +58,8 @@ public class ContentList extends AppCompatActivity {
 
         reminderService = new ReminderService(new ReminderHandler(this,null,null,1));
         createList(reminderService);
+
+        alarmService = new AlarmService(this);
 
         //TODO add options?
     }
@@ -153,14 +142,14 @@ public class ContentList extends AppCompatActivity {
                     reminder.set_time(date);
                     reminder.set_alarm(al);
                     reminderService.updateReminder(reminder);
-                    createReminder(reminder);
+                    alarmService.createReminder(reminder);
                 } else {
                     Reminder newReminder = new Reminder();
                     newReminder.set_text(message);
                     newReminder.set_time(date);
                     newReminder.set_alarm(al);
                     newReminder.set_id((int)reminderService.addReminder(newReminder));
-                    createReminder(newReminder);
+                    alarmService.createReminder(newReminder);
                 }
 
                 createList(reminderService);
@@ -170,38 +159,6 @@ public class ContentList extends AppCompatActivity {
 
         dialog.show();
     }
-
-    private void deleteReminder(Reminder reminder){
-        Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
-        notifyIntent.putExtra("Reminder",convertToByteArray(reminder));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder.get_id(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-    }
-
-    private void createReminder(Reminder reminder) {
-        Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
-        notifyIntent.putExtra("Reminder",convertToByteArray(reminder));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder.get_id(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.get_time().getTime(), pendingIntent);
-    }
-
-
-    private byte[] convertToByteArray(Serializable s){
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(bos);
-            out.writeObject(s);
-            out.flush();
-            return bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -233,10 +190,6 @@ public class ContentList extends AppCompatActivity {
             /*case R.id.action_settings:
                 Intent i=new Intent(this,SettingsActivity.class);
                 startActivity(i);
-                break;
-            case R.id.action_change_pass:
-                Intent i1=new Intent(this,ChangePasswordActivity.class);
-                startActivity(i1);
                 break;*/
         }
         return true;
@@ -256,7 +209,7 @@ public class ContentList extends AppCompatActivity {
         for(int i=selectedIndices.size()-1;i>=0;i--){
             Reminder reminder = new Reminder();
             reminder.set_id(reminderService.getReminderList()[selectedIndices.get(i)].get_id());
-            deleteReminder(reminder);
+            alarmService.deleteReminder(reminder);
             reminderService.delete(selectedIndices.get(i));
         }
 
@@ -278,7 +231,7 @@ public class ContentList extends AppCompatActivity {
         }
     }
 
-    public View getViewByPosition(int pos, ListView listView){
+    private View getViewByPosition(int pos, ListView listView){
         final int firstListItemPosition = listView.getFirstVisiblePosition();
         final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 

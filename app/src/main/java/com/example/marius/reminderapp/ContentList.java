@@ -153,12 +153,13 @@ public class ContentList extends AppCompatActivity {
                     reminder.set_time(date);
                     reminder.set_alarm(al);
                     reminderService.updateReminder(reminder);
+                    createReminder(reminder);
                 } else {
                     Reminder newReminder = new Reminder();
                     newReminder.set_text(message);
                     newReminder.set_time(date);
                     newReminder.set_alarm(al);
-                    reminderService.addReminder(newReminder);
+                    newReminder.set_id((int)reminderService.addReminder(newReminder));
                     createReminder(newReminder);
                 }
 
@@ -170,8 +171,15 @@ public class ContentList extends AppCompatActivity {
         dialog.show();
     }
 
+    private void deleteReminder(Reminder reminder){
+        Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
+        notifyIntent.putExtra("Reminder",convertToByteArray(reminder));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder.get_id(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+
     private void createReminder(Reminder reminder) {
-        System.out.println(reminder.get_time().toString());
         Intent notifyIntent = new Intent().setClass(this, ReminderReceiver.class);
         notifyIntent.putExtra("Reminder",convertToByteArray(reminder));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, reminder.get_id(), notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -246,6 +254,9 @@ public class ContentList extends AppCompatActivity {
         }
 
         for(int i=selectedIndices.size()-1;i>=0;i--){
+            Reminder reminder = new Reminder();
+            reminder.set_id(reminderService.getReminderList()[selectedIndices.get(i)].get_id());
+            deleteReminder(reminder);
             reminderService.delete(selectedIndices.get(i));
         }
 

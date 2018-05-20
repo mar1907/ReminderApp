@@ -22,8 +22,8 @@ public class ReminderService {
         return reminderList.toArray(new Reminder[reminderList.size()]);
     }
 
-    public void addReminder(Reminder reminder){
-        reminderHandler.addReminder(reminder);
+    public long addReminder(Reminder reminder){
+        return reminderHandler.addReminder(reminder);
     }
 
     public void updateReminder(Reminder reminder){

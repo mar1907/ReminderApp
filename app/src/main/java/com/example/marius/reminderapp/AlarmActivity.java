@@ -56,6 +56,5 @@ public class AlarmActivity extends AppCompatActivity {
         startActivity(intent);
         System.out.println("Stop");
         ringtoneAlarm.stop();
-        //TODO stop sound
     }
 }

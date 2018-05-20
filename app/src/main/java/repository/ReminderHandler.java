@@ -44,7 +44,7 @@ public class ReminderHandler extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public void addReminder(Reminder reminder){
+    public long addReminder(Reminder reminder){
         String sql = "INSERT INTO " + TABLE_REMINDER + " VALUES (null, ?, ?, ?)";
         SQLiteDatabase db = getWritableDatabase();
         SQLiteStatement statement= db.compileStatement(sql);
@@ -53,8 +53,9 @@ public class ReminderHandler extends SQLiteOpenHelper{
         statement.bindString(2, reminder.get_text());
         statement.bindLong(3, reminder.get_alarm());
 
-        statement.executeInsert();
+        long id = statement.executeInsert();
         db.close();
+        return id;
     }
 
     public void updateReminder(Reminder reminder){

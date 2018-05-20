@@ -45,12 +45,9 @@ public class AlarmIntentService extends IntentService{
                 .setContentTitle("ReminderApp")
                 .setContentText(reminder.get_text())
                 .setVibrate(new long[] { 1000, 1000})
-                //TODO change color
-                .setColor(Color.BLUE)
-                //TODO change icon
-                .setSmallIcon(R.mipmap.ic_delete)
-                //TODO change led color
-                .setLights(Color.BLUE, 500, 500);
+                .setColor(0xffc107)
+                .setSmallIcon(R.mipmap.ic_access_alarm)
+                .setLights(0xffc107, 500, 500);
 
         Intent notifyIntent = new Intent(this, ContentList.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);

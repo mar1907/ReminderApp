@@ -62,8 +62,6 @@ public class ContentList extends AppCompatActivity {
         createList(reminderService);
 
         alarmService = new AlarmService(this);
-
-        //TODO add options?
     }
 
     private void createList(final ReminderService reminderService){

@@ -16,7 +16,6 @@ import com.example.marius.reminderapp.activity.AlarmActivity;
 import com.example.marius.reminderapp.activity.ContentList;
 import com.example.marius.reminderapp.model.Reminder;
 
-
 public class AlarmIntentService extends IntentService{
 
     public AlarmIntentService() {
@@ -55,8 +54,6 @@ public class AlarmIntentService extends IntentService{
         Notification notification = builder.build();
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
         managerCompat.notify(reminder.get_id(), notification);
-
-
     }
 
     private Reminder convertToReminder(byte[] array){

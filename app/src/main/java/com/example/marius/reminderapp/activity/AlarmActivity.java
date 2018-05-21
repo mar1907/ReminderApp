@@ -24,7 +24,6 @@ public class AlarmActivity extends AppCompatActivity implements SensorEventListe
     private Ringtone ringtoneAlarm;
     private SensorManager mSensorManager;
     private Sensor mSensor;
-    private boolean hasTone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,7 @@ public class AlarmActivity extends AppCompatActivity implements SensorEventListe
         });
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("RemAppSharedPref", Context.MODE_PRIVATE);
-        hasTone = sharedPreferences.getBoolean("hasTone",false);
+        boolean hasTone = sharedPreferences.getBoolean("hasTone", false);
 
         Uri alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         if(hasTone){

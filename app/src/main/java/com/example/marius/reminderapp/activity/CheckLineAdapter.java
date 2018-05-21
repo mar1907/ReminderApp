@@ -18,11 +18,11 @@ import java.util.Date;
 import com.example.marius.reminderapp.R;
 import com.example.marius.reminderapp.model.Reminder;
 
-public class CheckLineAdapter extends ArrayAdapter {
+class CheckLineAdapter extends ArrayAdapter {
 
     private boolean isLongPressed;
 
-    public CheckLineAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull Object[] objects) {
+    CheckLineAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull Object[] objects) {
         super(context, resource, objects);
         isLongPressed=false;
     }
@@ -58,7 +58,7 @@ public class CheckLineAdapter extends ArrayAdapter {
     /**
      * have the getView method be called again with different values for isLongPressed to show the check box
      */
-    public void showCheckBox(){
+    void showCheckBox(){
         isLongPressed=true;
         notifyDataSetChanged();
     }
@@ -66,7 +66,7 @@ public class CheckLineAdapter extends ArrayAdapter {
     /**
      * have the getView method be called again with different values for isLongPressed to hide the check box
      */
-    public void hideCheckBox(){
+    void hideCheckBox(){
         isLongPressed=false;
         notifyDataSetChanged();
     }

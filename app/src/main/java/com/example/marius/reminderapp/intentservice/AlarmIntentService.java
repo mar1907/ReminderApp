@@ -1,4 +1,4 @@
-package com.example.marius.reminderapp;
+package com.example.marius.reminderapp.intentservice;
 
 import android.app.IntentService;
 import android.app.Notification;
@@ -11,7 +11,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 
-import model.Reminder;
+import com.example.marius.reminderapp.R;
+import com.example.marius.reminderapp.activity.AlarmActivity;
+import com.example.marius.reminderapp.activity.ContentList;
+import com.example.marius.reminderapp.model.Reminder;
 
 
 public class AlarmIntentService extends IntentService{

@@ -1,7 +1,8 @@
-package com.example.marius.reminderapp;
+package com.example.marius.reminderapp.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,10 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import model.Reminder;
-import repository.ReminderHandler;
-import service.AlarmService;
-import service.ReminderService;
+import com.example.marius.reminderapp.R;
+import com.example.marius.reminderapp.model.Reminder;
+import com.example.marius.reminderapp.repository.ReminderHandler;
+import com.example.marius.reminderapp.service.AlarmService;
+import com.example.marius.reminderapp.service.ReminderService;
 
 public class ContentList extends AppCompatActivity {
 
@@ -187,10 +189,10 @@ public class ContentList extends AppCompatActivity {
             case R.id.action_delete:
                 deleteSelectedItems();
                 break;
-            /*case R.id.action_settings:
+            case R.id.action_settings:
                 Intent i=new Intent(this,SettingsActivity.class);
                 startActivity(i);
-                break;*/
+                break;
         }
         return true;
     }

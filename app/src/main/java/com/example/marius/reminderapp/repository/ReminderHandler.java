@@ -1,4 +1,4 @@
-package repository;
+package com.example.marius.reminderapp.repository;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import model.Reminder;
+import com.example.marius.reminderapp.model.Reminder;
 
 public class ReminderHandler extends SQLiteOpenHelper{
 

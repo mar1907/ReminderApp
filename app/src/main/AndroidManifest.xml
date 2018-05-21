@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ContentList"
+            android:name=".activity.ContentList"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,19 +21,20 @@
         </activity>
 
         <receiver
-            android:name=".ReminderReceiver"
+            android:name=".intentservice.ReminderReceiver"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false" />
 
         <service
-            android:name=".AlarmIntentService"
-            android:exported="false"></service>
+            android:name=".intentservice.AlarmIntentService"
+            android:exported="false" />
 
         <activity
-            android:name=".AlarmActivity"
+            android:name=".activity.AlarmActivity"
             android:label="@string/title_activity_alarm"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.SettingsActivity"></activity>
     </application>
 
 </manifest>

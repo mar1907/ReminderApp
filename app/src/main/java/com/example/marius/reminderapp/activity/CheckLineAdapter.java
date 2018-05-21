@@ -1,4 +1,4 @@
-package com.example.marius.reminderapp;
+package com.example.marius.reminderapp.activity;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -15,9 +15,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import model.Reminder;
+import com.example.marius.reminderapp.R;
+import com.example.marius.reminderapp.model.Reminder;
 
-class CheckLineAdapter extends ArrayAdapter {
+public class CheckLineAdapter extends ArrayAdapter {
 
     private boolean isLongPressed;
 

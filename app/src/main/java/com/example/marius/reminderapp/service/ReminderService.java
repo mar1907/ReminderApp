@@ -1,9 +1,9 @@
-package service;
+package com.example.marius.reminderapp.service;
 
 import java.util.List;
 
-import model.Reminder;
-import repository.ReminderHandler;
+import com.example.marius.reminderapp.model.Reminder;
+import com.example.marius.reminderapp.repository.ReminderHandler;
 
 public class ReminderService {
 

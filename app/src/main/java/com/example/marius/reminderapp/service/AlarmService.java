@@ -1,18 +1,18 @@
-package service;
+package com.example.marius.reminderapp.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.marius.reminderapp.ReminderReceiver;
+import com.example.marius.reminderapp.intentservice.ReminderReceiver;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import model.Reminder;
+import com.example.marius.reminderapp.model.Reminder;
 
 public class AlarmService {
 

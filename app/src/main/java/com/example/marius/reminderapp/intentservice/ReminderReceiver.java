@@ -1,4 +1,4 @@
-package com.example.marius.reminderapp;
+package com.example.marius.reminderapp.intentservice;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

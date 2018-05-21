@@ -1,7 +1,8 @@
-package com.example.marius.reminderapp;
+package com.example.marius.reminderapp.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,11 +17,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.marius.reminderapp.R;
+
 public class AlarmActivity extends AppCompatActivity implements SensorEventListener {
 
     private Ringtone ringtoneAlarm;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private boolean hasTone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,15 @@ public class AlarmActivity extends AppCompatActivity implements SensorEventListe
             }
         });
 
+        SharedPreferences sharedPreferences = this.getSharedPreferences("RemAppSharedPref", Context.MODE_PRIVATE);
+        hasTone = sharedPreferences.getBoolean("hasTone",false);
+
         Uri alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        if(hasTone){
+            String tone = sharedPreferences.getString("Tone", "");
+            alarmTone = Uri.parse(tone);
+        }
+
         ringtoneAlarm = RingtoneManager.getRingtone(getApplicationContext(), alarmTone);
         ringtoneAlarm.play();
 
